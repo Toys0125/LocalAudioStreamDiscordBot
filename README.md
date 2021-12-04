@@ -1,7 +1,7 @@
 # LocalAudioStreamDiscordBot
 <string>NOT INTENDED FOR PRODUCTION</strong>
 ```
-python -m pip install discord.py python-dotenv
+python -m pip install discord.py python-dotenv discord.py[voice]
 ```
 .env
 ```
