@@ -25,7 +25,8 @@ DISCORD_TOKEN = os.getenv("discord_token")
 MODID = int(os.getenv("modsid"))
 VOLUME = float(os.getenv("volume"))
 if not VOLUME:
-    VOLUME=0.2
+    VOLUME = 0.2
+
 
 def owner_or_role(ctx):
     for item in ctx.author.roles:
@@ -53,8 +54,10 @@ FFMPEG_OPTIONS = {
 
 async def errorOccured(ctx):
     errorEmbed = discord.Embed(title=bot.user.name+" Music Bot")
-    errorEmbed.add_field(name="Error",value="Sorry exprenced an error, look at console to see what happened.")
+    errorEmbed.add_field(
+        name="Error", value="Sorry exprenced an error, look at console to see what happened.")
     ctx.send(embed=errorEmbed)
+
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -169,12 +172,17 @@ async def stop(ctx):
     else:
         await ctx.send("The bot is not playing anything at the moment.")
 
-VLCPASSWORD=os.getenv("vlcpassword")
+VLCPASSWORD = os.getenv("vlcpassword")
 if not VLCPASSWORD:
     print("Missing VLCPAASSOWRD might want to add that...\n Make sure you enabled http in Prefrences (Turn on view all settings on bottom left) -> Main Interface and toggle http. Than go to the drop down of main interface\n\
-         and click lua. Under Lua http set your http password there.")
+         and click lua. Under Lua http set your http password there.\n Or type 'disabled' for the password to disable")
+enabledPlaying = None
+if VLCPASSWORD == 'disabled':
+    enabledPlaying = False
+else:
+    enabledPlaying = True
 
-@bot.command(name='playing', help="Current playing song", aliases=["rn", "queue", "song"])
+@bot.command(name='playing', help="Current playing song", aliases=["rn", "queue", "song"],enabled=enabledPlaying)
 @commands.cooldown(1, 30)
 async def playing(ctx):
     status = None
@@ -189,11 +197,12 @@ async def playing(ctx):
     else:
         await errorOccured(ctx)
         return
-    embedmessage = discord.Embed(title=bot.user.name+" Current Playing", type="rich")
+    embedmessage = discord.Embed(
+        title=bot.user.name+" Current Playing", type="rich")
     for item in xmlroot.find("information").iter():
         if len(item.attrib) > 0 and item.text != "\n    ":
-            #print(item.attrib["name"],item.text)
-            embedmessage.add_field(name=item.attrib["name"],value=item.text)
+            # print(item.attrib["name"],item.text)
+            embedmessage.add_field(name=item.attrib["name"], value=item.text)
     await ctx.send(embed=embedmessage)
 
 
