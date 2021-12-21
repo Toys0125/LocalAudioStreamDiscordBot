@@ -28,7 +28,7 @@ if not VOLUME:
     VOLUME = 0.2
 
 
-def owner_or_role(ctx):
+async def owner_or_role(ctx):
     for item in ctx.author.roles:
         if item.id == MODID:
             return True
@@ -109,14 +109,14 @@ async def on_command_error(ctx, error):
 
 @bot.command(name='ping', help='Latency')
 async def ping(ctx):
-    if not await owner(ctx):
+    if not await owner_or_role(ctx):
         return
     await ctx.send("Current ping is: {}ms".format(round(bot.latency*1000)))
 
 
 @bot.command(name='join', help='Tells the bot to join the voice channel')
 async def join(ctx):
-    if not await owner(ctx):
+    if not await owner_or_role(ctx):
         return
     if not ctx.message.author.voice:
         await ctx.send("{} is not connected to a voice channel".format(ctx.message.author.name))
@@ -131,7 +131,7 @@ async def join(ctx):
 
 @bot.command(name='leave', help='To make the bot leave the voice channel')
 async def leave(ctx):
-    if not await owner(ctx):
+    if not await owner_or_role(ctx):
         return
     if ctx.message.guild.voice_client:
         voice_client = ctx.message.guild.voice_client
@@ -146,9 +146,10 @@ async def leave(ctx):
 
 @bot.command(name='play', help='Start')
 async def play(ctx):
-    if not await owner(ctx):
+    if not await owner_or_role(ctx):
         return
-    await join(ctx)
+    if not ctx.message.guild.voice_client or not ctx.message.guild.voice_client.is_connected():
+        await join(ctx)
     try:
         server = ctx.message.guild
         voice_channel = server.voice_client
@@ -164,7 +165,7 @@ async def play(ctx):
 
 @bot.command(name='stop', help='Stops the song')
 async def stop(ctx):
-    if not await owner(ctx):
+    if not await owner_or_role(ctx):
         return
     voice_client = ctx.message.guild.voice_client
     if voice_client.is_playing():

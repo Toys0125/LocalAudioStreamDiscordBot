@@ -8,7 +8,7 @@ python -m pip install discord.py python-dotenv discord.py[voice] requests
 discord_token=TOKEN
 modsid=ID
 volume=0.2
-vlcpassword=test
+vlcpassword=test#use disabled to disable
 ```
 Install FFMPEG as well.
 
